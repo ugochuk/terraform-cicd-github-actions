@@ -1,11 +1,18 @@
 name: Terraform PR
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+      - ".github/workflows/**"
+      - ".tflint.hcl"
   pull_request:
     branches: [main]
     paths:
       - "terraform/**"
       - ".github/workflows/**"
+      - ".tflint.hcl"
 
 permissions:
   contents: read
@@ -41,12 +48,13 @@ jobs:
         uses: terraform-linters/setup-tflint@v4
 
       - name: TFLint
+        working-directory: .
         run: |
           tflint --init
-          tflint --recursive
+          tflint --chdir=terraform --recursive
 
       - name: Trivy IaC Scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.33.1
         with:
           scan-type: config
           scan-ref: terraform
@@ -55,6 +63,7 @@ jobs:
 
   plan:
     name: Terraform Plan
+    if: github.event_name == 'pull_request'
     needs: quality
     runs-on: ubuntu-latest
     defaults:
