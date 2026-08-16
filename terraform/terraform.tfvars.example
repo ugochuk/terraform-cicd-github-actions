@@ -1,0 +1,8 @@
+environment = "dev"
+location    = "eastus2"
+prefix      = "rugo"
+
+tags = {
+  Owner      = "CloudPlatform"
+  CostCenter = "Portfolio"
+}
